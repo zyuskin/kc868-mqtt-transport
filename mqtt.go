@@ -154,5 +154,7 @@ func (m *MQTTClient) messagePubHandler(_ mqtt.Client, msg mqtt.Message) {
 	if string(msg.Payload()) == "ON" {
 		on = true
 	}
-	m.events <- Event{SwitchId: switchId, On: on, Provider: MQTTProviderName}
+	if m.switchList[switchId] != on {
+		m.events <- Event{SwitchId: switchId, On: on, Provider: MQTTProviderName}
+	}
 }
