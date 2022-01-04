@@ -12,4 +12,6 @@ FROM scratch
 
 COPY --from=0 /go/bin/kc868-mqtt-transport /usr/bin/kc868-mqtt-transport
 
+USER 2000
+
 CMD ["/usr/bin/kc868-mqtt-transport"]
