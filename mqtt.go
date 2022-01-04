@@ -19,6 +19,7 @@ type MQTTClient struct {
 }
 
 type MQTTDeviceConfig struct {
+	UniqueId     string `json:"unique_id"`
 	Name         string `json:"name"`
 	CommandTopic string `json:"command_topic"`
 	StateTopic   string `json:"state_topic"`
@@ -102,6 +103,7 @@ func (m *MQTTClient) createSwitchTopicAndSubscribe(switchId string) {
 func (m *MQTTClient) configureMQTTDevice(switchId string) {
 	var topic = m.getTopicName(switchId)
 	deviceConfig := &MQTTDeviceConfig{
+		UniqueId:     fmt.Sprintf("%s_%s_%s", m.topicGroupId, m.topicDeviceType, switchId),
 		Name:         fmt.Sprintf("%s_%s_%s", m.topicGroupId, m.topicDeviceType, switchId),
 		CommandTopic: fmt.Sprintf("%s/set", topic),
 		StateTopic:   fmt.Sprintf("%s/state", topic),
