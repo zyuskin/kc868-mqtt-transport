@@ -49,6 +49,8 @@ func (p *KC868Client) connect() {
 	go p.reader()
 	go p.startKeepAlive()
 	go p.startScanJob()
+	p.send("RELAY-TEST-NOW ")
+	time.Sleep(time.Second * 3)
 	p.send("RELAY-SCAN_DEVICE-NOW")
 }
 
@@ -62,6 +64,8 @@ func (p *KC868Client) startKeepAlive() {
 func (p *KC868Client) startScanJob() {
 	for {
 		time.Sleep(time.Minute * 10)
+		p.send("RELAY-TEST-NOW ")
+		time.Sleep(time.Second * 3)
 		p.send("RELAY-SCAN_DEVICE-NOW")
 	}
 }
@@ -108,6 +112,15 @@ func (p *KC868Client) handle(text string) {
 		if len(response) < 5 {
 			logrus.Errorf("Wrong READ command parameters from %s -> %s", KC868ProviderName, response)
 			return
+		}
+		if len(response) > 2 {
+			if response[3] == "SCAN_DEVICE" {
+				dev := strings.Split(strings.Split(response[4], "_")[1], ",")
+				count, _ := strconv.Atoi(dev[0])
+				p.relayCount = count
+				p.startScan(count)
+				return
+			}
 		}
 		r := strings.Split(response[4], ",")
 		p.setRelayState(r[1], r[2])

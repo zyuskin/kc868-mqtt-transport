@@ -1,4 +1,4 @@
-FROM golang
+FROM golang:1.24
 WORKDIR /go/src/kc868-mqtt-transport
 
 ADD go.mod go.sum /go/src/kc868-mqtt-transport/
